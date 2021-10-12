@@ -1,13 +1,59 @@
-body {
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+}
+.header {
+  background-color: hsl(199, 82%, 71%);
+  text-align: center;
+  padding: 2rem;
+}
+body {
+  background-color: hsl(199, 82%, 78%);
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+div.columns {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(157px, 1fr));
+  gap: 10px;
+}
+div.tasks {
+  display: grid;
+  gap: 10px;
+}
+div.full-tasks {
+  padding: 10px;
+}
+div.column {
+  /*
+  background-color: hsl(199, 81%, 86%);
+  background-color: hsl(200, 100%, 70%);
+  */
+  word-wrap: break-word;
+}
+.column-header {
+  background-color: hsl(199, 81%, 85%);
+}
+
+.column-title,
+.column-input-bar,
+.task-header {
+  display: grid;
+  grid-template-columns: 11fr 1fr;
+}
+
+.column-title {
+  padding-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.column-input-bar {
+  padding: 10px;
+}
+.column-input-bar > input {
+  width: 100%;
+  box-sizing: border-box;
 }
