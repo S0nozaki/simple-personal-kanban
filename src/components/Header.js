@@ -1,6 +1,15 @@
 import { useRef } from 'react'
 import { useState } from "react";
-const Header = ({ onAdd, columns, onImportFile }) => {
+import LoginForm from './LoginForm';
+
+const Header = ({ onAdd, columns, onImportFile, onSignOut, user }) => {
+    const [showLogin, setShowLogin] = useState(false)
+    const login = () => {
+        setShowLogin(!showLogin)
+    }
+    const logout = () => {
+        onSignOut()
+    }
     const [columnName, setColumnName] = useState("")
     const handleKeyDown = (event) => {
         if(event.keyCode===13){
@@ -27,6 +36,7 @@ const Header = ({ onAdd, columns, onImportFile }) => {
     }
     return (
         <header className="header">
+            <LoginForm isVisible={showLogin} hideLogin={setShowLogin}></LoginForm>
             <h1>Personal Kanban</h1>
             <input type="text" id={"column-input"} placeholder="New column name"
             onChange={event=>setColumnName(event.target.value)} value={columnName} onKeyDown={handleKeyDown}></input>
@@ -36,6 +46,8 @@ const Header = ({ onAdd, columns, onImportFile }) => {
             ><button>Export to JSON file</button></a>
             <input type="file" name="Import JSON file" hidden ref={inputFile} onChange={onFileUpload}></input>
             <button onClick={onImport}>Import</button>
+            <button onClick={login} className={user == null ? "" : "invisible"}>Log in</button>
+            <button onClick={logout} className={user == null ? "invisible" : ""}>Log out</button>
         </header>
     )
 }

@@ -57,3 +57,18 @@ div.column {
   width: 100%;
   box-sizing: border-box;
 }
+
+.login-form {
+  margin-top: 10px;
+}
+.visible {
+  background-color: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+.invisible {
+  display: none;
+}
