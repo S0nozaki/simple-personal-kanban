@@ -3,7 +3,7 @@ import Header from "./components/Header";
 import { useState } from "react";
 import { DragDropContext} from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
-import Firebase, { signOutUser } from "./firebase"
+import Firebase, { signOutUser, getUserKanban } from "./firebase"
 
 function App() {
   const [columns, setColumns] = useState([{id:uuidv4(), name:'columna',tasks:[{id:uuidv4(), name:"Generar columnas"},{id:uuidv4(), name:"Generar columna"},{id:uuidv4(), name:"Generar tasks"}]}])//,{id:1, name:'columna2',tasks:[]}
@@ -37,9 +37,13 @@ function App() {
     setColumns(columns.map(column => column.name === source.droppableId ? sourceColumn : column))
   }
   const [user, setUser] = useState()
+  const setUserData = async (user_id) => {
+    setUser(user_id)
+    importFile(await getUserKanban(user_id))
+  }
   return (
     <>
-      <Firebase onSetUser={setUser}></Firebase>
+      <Firebase onSetUserData={setUserData}></Firebase>
       <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onSignOut={signOutUser} user={user}></Header>
       <DragDropContext onDragEnd={result => dragEnd(result)}>
         <div className="container">

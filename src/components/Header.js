@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { useState } from "react";
 import LoginForm from './LoginForm';
+import { writeUserKanban } from '../firebase';
 
 const Header = ({ onAdd, columns, onImportFile, onSignOut, user }) => {
     const [showLogin, setShowLogin] = useState(false)
@@ -34,6 +35,9 @@ const Header = ({ onAdd, columns, onImportFile, onSignOut, user }) => {
         }
         fileReader.readAsText(file)
     }
+    const onSave = () => {
+        writeUserKanban(user, columns)
+    }
     return (
         <header className="header">
             <LoginForm isVisible={showLogin} hideLogin={setShowLogin}></LoginForm>
@@ -46,6 +50,7 @@ const Header = ({ onAdd, columns, onImportFile, onSignOut, user }) => {
             ><button>Export to JSON file</button></a>
             <input type="file" name="Import JSON file" hidden ref={inputFile} onChange={onFileUpload}></input>
             <button onClick={onImport}>Import</button>
+            <button onClick={onSave} className={user == null ? "invisible" : ""}>Save</button>
             <button onClick={login} className={user == null ? "" : "invisible"}>Log in</button>
             <button onClick={logout} className={user == null ? "invisible" : ""}>Log out</button>
         </header>
