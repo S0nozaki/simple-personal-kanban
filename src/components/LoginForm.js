@@ -28,19 +28,22 @@ const LoginForm = ({ isVisible, hideLogin }) => {
     }
     return (
         <div className={isVisible? "visible" : "invisible"}>
-            <form>
-                <h1>{login ? "Log in" : "Sign up"}</h1>
-                <label>Username </label>
-                <input type="text" name="username" className="login-form" onChange={event=>setUsername(event.target.value)} value={username}/>
-                <br></br>
-                <label>Password </label>
-                <input type="password" name="password" className="login-form" onChange={event=>setPassword(event.target.value)} value={password}/>
-                <br></br>
-                <input type="button" value="Log in" className={login ? "" : "invisible"} onClick={handleLogIn}/>
-                <input type="button" value="Sign up" className={login ? "invisible" : ""} onClick={handleSignUp}/>
-                <br></br>
-                <label>{login ? "Don't": "Already"} have an account? </label>
-                <a href="#" onClick={()=>setLogin(!login)}>{login ? "Sign up": "Log in"}</a>
+            <form className="login-form">
+                <div className="login-header">
+                    <h1>{login ? "Log in" : "Sign up"}</h1>
+                </div>
+                <div className="login-body">
+                    <label className="login-body-label">Username </label>
+                    <input type="text" name="username" className="login-input" onChange={event=>setUsername(event.target.value)} value={username}/>
+                    <label className="login-body-label">Password </label>
+                    <input type="password" name="password" className="login-input" onChange={event=>setPassword(event.target.value)} value={password}/>
+                    <input type="button" value="Log in" className={login ? "" : "invisible"} onClick={handleLogIn}/>
+                    <input type="button" value="Sign up" className={login ? "invisible" : ""} onClick={handleSignUp}/>
+                </div>
+                <div className="login-footer">
+                    <label>{login ? "Don't": "Already"} have an account?
+                    <a href="#" onClick={()=>setLogin(!login)}>{login ? "Sign up": "Log in"}</a></label>
+                </div>
             </form>
         </div>
     );
