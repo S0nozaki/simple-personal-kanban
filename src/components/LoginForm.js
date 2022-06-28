@@ -35,7 +35,7 @@ const LoginForm = ({ isVisible, hideLogin }) => {
         hideLogin(false)
     }
     return (
-        <div className={isVisible? "visible" : "invisible"}>
+        <div className={isVisible? "visible-modal login-container" : "invisible"}>
             <form className="login-form" onKeyDown={event=>handleKeyDown(event,login)}>
                 <div className="login-header">
                     <h1>{login ? "Log in" : "Sign up"}</h1>

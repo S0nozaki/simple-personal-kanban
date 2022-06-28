@@ -2,7 +2,7 @@ import React from 'react'
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { useState } from "react";
 
-const Column = ({ column, onEditColumn, onDelete, onCreateTask, onDeleteTask }) => {
+const Column = ({ column, onEditColumn, onDelete, onCreateTask, onDeleteTask, onSelectTask }) => {
     const [taskName, setTaskName] = useState("")
     const [isEditingColumn, setIsEditingColumn] = useState(false)
     const [editColumnName, setEditColumnName] = useState("")
@@ -61,7 +61,7 @@ const Column = ({ column, onEditColumn, onDelete, onCreateTask, onDeleteTask }) 
                                 {...provided.dragHandleProps}
                             >
                                 <div className="task">
-                                <div className="task-header" onClick={()=>alert("asd")}>
+                                <div className="task-header" onClick={()=>onSelectTask(column.id, task.id)}>
                                 {task.name}
                                 <button onClick={()=>onDeleteTask(column.id, task.id)}>X</button>
                                 </div>

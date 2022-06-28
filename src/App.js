@@ -1,5 +1,6 @@
 import Columns from "./components/Columns";
 import Header from "./components/Header";
+import TaskCard from "./components/TaskCard";
 import { useState } from "react";
 import { DragDropContext} from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
@@ -25,6 +26,14 @@ function App() {
   const deleteTask = (columnID, deleteID) => {
     setColumns(columns.map(column => column.id === columnID ? {id:column.id, name:column.name, tasks:[...column.tasks.filter((task)=>task.id!==deleteID)]} : column))
   }
+  const [selectedTask, setSelectedTask] = useState({})
+  const selectTask = (columnID, selectID) => {
+    setSelectedTask({...(columns.find(column => column.id === columnID).tasks.find(task => task.id === selectID)), columnID: columnID})
+    setIsTaskCardVisible(true)
+  }
+  const editTask = (columnID, editedTask) => {
+    setColumns(columns.map(column => column.id === columnID ? {id:column.id, name:column.name, tasks:column.tasks.map(task => task.id === editedTask.id ? editedTask : task)} : column))
+  }
   const dragEnd = (res) => {
     const { source, destination } = res;
     if(!destination || ((source.droppableId === destination.droppableId) && (source.index === destination.index))) return
@@ -44,13 +53,15 @@ function App() {
     setUser(user_id)
     importFile(await getUserKanban(user_id))
   }
+  const [isTaskCardVisible, setIsTaskCardVisible] = useState(false)
   return (
     <>
       <Firebase onSetUserData={setUserData}></Firebase>
       <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onSignOut={signOutUser} user={user}></Header>
+      <TaskCard isTaskCardVisible={isTaskCardVisible} setIsTaskCardVisible={setIsTaskCardVisible} selectedTask={selectedTask} setSelectedTask={setSelectedTask} onEditTask={editTask}></TaskCard>
       <DragDropContext onDragEnd={result => dragEnd(result)}>
         <div className="container">
-          <Columns columns={columns} onEditColumn={editColumn} onDelete={deleteColumn} onCreateTask={createTask} onDeleteTask={deleteTask}></Columns>
+          <Columns columns={columns} onEditColumn={editColumn} onDelete={deleteColumn} onCreateTask={createTask} onDeleteTask={deleteTask} onSelectTask={selectTask}></Columns>
         </div>
       </DragDropContext>
     </>
