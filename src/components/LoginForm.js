@@ -21,6 +21,14 @@ const LoginForm = ({ isVisible, hideLogin }) => {
         }
         handleSubmit()
     }
+    const handleKeyDown = (event, login) => {
+        if(event.keyCode===13){
+            if(login)
+                handleLogIn()
+            else
+                handleSignUp()
+        }
+    }
     const handleSubmit = () => {
         setUsername("")
         setPassword("")
@@ -28,7 +36,7 @@ const LoginForm = ({ isVisible, hideLogin }) => {
     }
     return (
         <div className={isVisible? "visible" : "invisible"}>
-            <form className="login-form">
+            <form className="login-form" onKeyDown={event=>handleKeyDown(event,login)}>
                 <div className="login-header">
                     <h1>{login ? "Log in" : "Sign up"}</h1>
                 </div>
