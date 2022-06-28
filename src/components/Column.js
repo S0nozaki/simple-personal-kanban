@@ -2,24 +2,40 @@ import React from 'react'
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { useState } from "react";
 
-const Column = ({ column, onDelete, onCreateTask, onDeleteTask }) => {
+const Column = ({ column, onEditColumn, onDelete, onCreateTask, onDeleteTask }) => {
     const [taskName, setTaskName] = useState("")
+    const [isEditingColumn, setIsEditingColumn] = useState(false)
+    const [editColumnName, setEditColumnName] = useState("")
     const handleKeyDown = (event) => {
         if(event.keyCode===13){
-            handleSubmit()
+            handleSubmit(event)
+        }
+        if(event.key === "Escape"){
+            setEditColumnName('')
+            setIsEditingColumn(false)
         }
     }
     const handleSubmit = (event) => {
-        if(taskName!==""){
-            onCreateTask(column.id,taskName)
-            setTaskName('')
+        if (!event.target.id.includes("edit")){
+            if(taskName!==""){
+                onCreateTask(column.id,taskName)
+                setTaskName('')
+            }
+        } else if (event.target.id.includes("column")) {
+            if(editColumnName !== ""){
+                onEditColumn(event.target.id, editColumnName)
+                setEditColumnName('')
+                setIsEditingColumn(false)
+            }
         }
     }
     return (
         <div className="column">
             <div className="column-header">
             <div className="column-title">
-                <h3>{column.name}</h3>
+                <h3 className={isEditingColumn ? "invisible" : ""} onClick={()=>setIsEditingColumn(true)}>{column.name}</h3>
+                <input type="text" id={"input-edit-column-"+column.id} className={isEditingColumn ? "" : "invisible"} value={editColumnName}
+                placeholder={column.name} onClick={()=> setEditColumnName(column.name) } onChange={event=>setEditColumnName(event.target.value)} onKeyDown={handleKeyDown}></input>
                 <button onClick={()=>onDelete(column.id)}>X</button>
             </div>
             <div className="column-input-bar">

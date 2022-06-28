@@ -13,6 +13,9 @@ function App() {
   const deleteColumn = (id) =>{
     setColumns(columns.filter(column => column.id !== id))
   }
+  const editColumn = (id, newName) => {
+    setColumns(columns.map(column => id.includes(column.id) ? {...column, name:newName} : column ))
+  }
   const importFile = (importedColumns) => {
     setColumns([...importedColumns])
   }
@@ -47,7 +50,7 @@ function App() {
       <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onSignOut={signOutUser} user={user}></Header>
       <DragDropContext onDragEnd={result => dragEnd(result)}>
         <div className="container">
-          <Columns columns={columns} onDelete={deleteColumn} onCreateTask={createTask} onDeleteTask={deleteTask}></Columns>
+          <Columns columns={columns} onEditColumn={editColumn} onDelete={deleteColumn} onCreateTask={createTask} onDeleteTask={deleteTask}></Columns>
         </div>
       </DragDropContext>
     </>
