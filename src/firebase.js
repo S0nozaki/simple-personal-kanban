@@ -25,7 +25,10 @@ export const getUserKanban = async (user_id) => {
         tasks.forEach((task)=>{
             let column_name = task.data().column_name
             if(columns === {} || !(column_name in columns)){
-                columns[column_name] = [{"id": uuidv4(), "name": task.data().name}]
+                if(task.data().name)
+                    columns[column_name] = [{"id": uuidv4(), "name": task.data().name}]
+                else
+                    columns[column_name] = []
             } else if(column_name in columns){
                 columns[column_name].push({"id": uuidv4(), "name": task.data().name})
             }
@@ -54,16 +57,25 @@ export const writeUserKanban = async (user_id, kanban) => {
     kanban.forEach((column) => {
         column_order++
         let task_order = 0
-        column.tasks.forEach((task)=>{
-            task_order++
+        if(column.tasks.length === 0) {
             writeList.push(addDoc(tasksRef, {
                 column_name: column.name,
                 column_order: column_order,
-                name: task.name,
                 order: task_order,
                 user_id: user_id
             }))
-        })
+        } else {
+            column.tasks.forEach((task)=>{
+                task_order++
+                writeList.push(addDoc(tasksRef, {
+                    column_name: column.name,
+                    column_order: column_order,
+                    name: task.name,
+                    order: task_order,
+                    user_id: user_id
+                }))
+            })
+        }
     })
     return await Promise.all(writeList)
 }
