@@ -26,11 +26,17 @@ export const getUserKanban = async (user_id) => {
             let column_name = task.data().column_name
             if(columns === {} || !(column_name in columns)){
                 if(task.data().name)
-                    columns[column_name] = [{"id": uuidv4(), "name": task.data().name}]
+                    if(task.data().comment)
+                        columns[column_name] = [{"id": uuidv4(), "name": task.data().name, "comment": task.data().comment}]
+                    else
+                        columns[column_name] = [{"id": uuidv4(), "name": task.data().name}]
                 else
                     columns[column_name] = []
             } else if(column_name in columns){
-                columns[column_name].push({"id": uuidv4(), "name": task.data().name})
+                if(task.data().comment)
+                    columns[column_name].push({"id": uuidv4(), "name": task.data().name, "comment": task.data().comment})
+                else
+                    columns[column_name].push({"id": uuidv4(), "name": task.data().name})
             }
         })
         let userKanban = Object.keys(columns).map((key) => ({"id":uuidv4() ,"name":key, "tasks":columns[key]}))
@@ -67,13 +73,24 @@ export const writeUserKanban = async (user_id, kanban) => {
         } else {
             column.tasks.forEach((task)=>{
                 task_order++
-                writeList.push(addDoc(tasksRef, {
+                if(task.comment){
+                    writeList.push(addDoc(tasksRef, {
+                    column_name: column.name,
+                    column_order: column_order,
+                    name: task.name,
+                    order: task_order,
+                    comment: task.comment,
+                    user_id: user_id
+                    }))
+                } else {
+                    writeList.push(addDoc(tasksRef, {
                     column_name: column.name,
                     column_order: column_order,
                     name: task.name,
                     order: task_order,
                     user_id: user_id
-                }))
+                    }))
+                }
             })
         }
     })
