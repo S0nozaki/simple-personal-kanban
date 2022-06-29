@@ -1,13 +1,22 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 const TaskCard = ( { isTaskCardVisible, setIsTaskCardVisible, selectedTask, setSelectedTask, onEditTask }) => {
     const [editedTaskName, setEditedTaskName] = useState('')
     const [comment, setComment] = useState('')
+    const titleInput = useRef(null)
+    useEffect(()=>{
+        titleInput.current.focus()
+    })
     const handleClose = (event) => {
         setIsTaskCardVisible(false)
         setSelectedTask({})
         setEditedTaskName('')
         setComment('')
+    }
+    const handleKeyDown = (e) => {
+        if(e.key === "Escape"){
+            handleClose(e);
+        }
     }
     const handleClick = (type) => {
         if(type ==="Title"){
@@ -35,10 +44,10 @@ const TaskCard = ( { isTaskCardVisible, setIsTaskCardVisible, selectedTask, setS
     }
     return (
         <div className={isTaskCardVisible? "visible-card task-card-container" : "invisible"}>
-            <div className="task-card">
+            <div className="task-card" onKeyDown={handleKeyDown}>
                 <div className="card-header">
                     <label>Task title</label>
-                    <input placeholder={selectedTask.name} value={editedTaskName} onClick={()=>{handleClick("Title")}} onChange={event=>setEditedTaskName(event.target.value)}></input>
+                    <input ref={titleInput} placeholder={selectedTask.name} value={editedTaskName} onClick={()=>{handleClick("Title")}} onChange={event=>setEditedTaskName(event.target.value)}></input>
                     <button onClick={handleClose}>X</button>
                 </div>
                 <div className="card-body">
