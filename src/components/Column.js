@@ -61,8 +61,8 @@ const Column = ({ column, onEditColumn, onDelete, onCreateTask, onDeleteTask, on
                                 {...provided.dragHandleProps}
                             >
                                 <div className="task">
-                                <div className="task-header" onClick={()=>onSelectTask(column.id, task.id)}>
-                                {task.name}
+                                <div className="task-header">
+                                <label onClick={()=>onSelectTask(column.id, task.id)}>{task.name}</label>
                                 <button onClick={()=>onDeleteTask(column.id, task.id)}>X</button>
                                 </div>
                                 </div>
