@@ -7,24 +7,30 @@ import { v4 as uuidv4 } from "uuid";
 import Firebase, { signOutUser, getUserKanban } from "./firebase"
 
 function App() {
+  const [unsavedChanges, setUnsavedChanges] = useState(false)
   const [columns, setColumns] = useState([{id:uuidv4(), name:'columna',tasks:[{id:uuidv4(), name:"Generar columnas"},{id:uuidv4(), name:"Generar columna"},{id:uuidv4(), name:"Generar tasks"}]}])//,{id:1, name:'columna2',tasks:[]}
   const addColumn = (columnName) => {
     setColumns([...columns, {id:uuidv4(), name:columnName, tasks:[]}])
+    setUnsavedChanges(true)
   }
   const deleteColumn = (id) =>{
     setColumns(columns.filter(column => column.id !== id))
+    setUnsavedChanges(true)
   }
   const editColumn = (id, newName) => {
     setColumns(columns.map(column => id.includes(column.id) ? {...column, name:newName} : column ))
+    setUnsavedChanges(true)
   }
   const importFile = (importedColumns) => {
     setColumns([...importedColumns])
   }
   const createTask = (id, name) => {
     setColumns(columns.map(column => column.id === id ? {id:column.id, name:column.name, tasks:[...column.tasks, {id:uuidv4(), name:name}]} : column))
+    setUnsavedChanges(true)
   }
   const deleteTask = (columnID, deleteID) => {
     setColumns(columns.map(column => column.id === columnID ? {id:column.id, name:column.name, tasks:[...column.tasks.filter((task)=>task.id!==deleteID)]} : column))
+    setUnsavedChanges(true)
   }
   const [selectedTask, setSelectedTask] = useState({})
   const selectTask = (columnID, selectID) => {
@@ -33,6 +39,7 @@ function App() {
   }
   const editTask = (columnID, editedTask) => {
     setColumns(columns.map(column => column.id === columnID ? {id:column.id, name:column.name, tasks:column.tasks.map(task => task.id === editedTask.id ? editedTask : task)} : column))
+    setUnsavedChanges(true)
   }
   const dragEnd = (res) => {
     const { source, destination } = res;
@@ -47,6 +54,7 @@ function App() {
       setColumns(columns.map(column => column.name === destination.droppableId ? newColumn : column))
     }
     setColumns(columns.map(column => column.name === source.droppableId ? sourceColumn : column))
+    setUnsavedChanges(true)
   }
   const [user, setUser] = useState()
   const setUserData = async (user_id) => {
@@ -57,7 +65,7 @@ function App() {
   return (
     <>
       <Firebase onSetUserData={setUserData}></Firebase>
-      <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onSignOut={signOutUser} user={user}></Header>
+      <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onSignOut={signOutUser} user={user} unsavedChanges={unsavedChanges} setUnsavedChanges={setUnsavedChanges}></Header>
       <TaskCard isTaskCardVisible={isTaskCardVisible} setIsTaskCardVisible={setIsTaskCardVisible} selectedTask={selectedTask} setSelectedTask={setSelectedTask} onEditTask={editTask}></TaskCard>
       <DragDropContext onDragEnd={result => dragEnd(result)}>
         <div className="container">
