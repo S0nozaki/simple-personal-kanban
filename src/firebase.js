@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signOut, signInWithEmailAndPassword} from "firebase/auth";
 import { getFirestore, collection, getDocs, query, where, orderBy, addDoc, writeBatch } from 'firebase/firestore'
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check"
 import { v4 as uuidv4 } from "uuid";
 
 const firebaseConfig = {
@@ -14,17 +13,10 @@ const firebaseConfig = {
 };
 
 export const initializeFirebaseApp = () => {
-    let app = initializeApp(firebaseConfig);
-    if (process.env.NODE_ENV !== "production")
-        window.FIREBASE_APPCHECK_DEBUG_TOKEN = process.env.REACT_APP_FIREBASE_APP_CHECK_DEBUG_TOKEN
-    const appCheck = initializeAppCheck(app, {
-    provider: new ReCaptchaV3Provider(process.env.REACT_APP_FIREBASE_APP_CHECK_SITE_KEY),
-    isTokenAutoRefreshEnabled: process.env.NODE_ENV === "production"
-    })
-    return app;
+    return initializeApp(firebaseConfig)
 }
 export const initializeAuth = (app) => {
-    return getAuth(app);
+    return getAuth(app)
 }
 export const initializeDB = (app) => {
     return getFirestore(app)
