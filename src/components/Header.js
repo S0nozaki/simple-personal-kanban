@@ -1,9 +1,8 @@
 import { useRef } from 'react'
 import { useState } from "react";
 import LoginForm from './LoginForm';
-import { writeUserKanban } from '../firebase';
 
-const Header = ({ onAdd, columns, onImportFile, onSignOut, user, unsavedChanges, setUnsavedChanges }) => {
+const Header = ({ onAdd, columns, onImportFile, onCreateUser, onLogIn, onSignOut, onSaveKanban, user, unsavedChanges, setUnsavedChanges }) => {
     const [showLogin, setShowLogin] = useState(false)
     const login = () => {
         setShowLogin(!showLogin)
@@ -36,12 +35,12 @@ const Header = ({ onAdd, columns, onImportFile, onSignOut, user, unsavedChanges,
         fileReader.readAsText(file)
     }
     const onSave = () => {
-        writeUserKanban(user, columns)
+        onSaveKanban()
         setUnsavedChanges(false)
     }
     return (
         <header className="header">
-            <LoginForm isVisible={showLogin} hideLogin={setShowLogin}></LoginForm>
+            <LoginForm isVisible={showLogin} hideLogin={setShowLogin} onCreateUser={onCreateUser} onLogIn={onLogIn}></LoginForm>
             <h1>Personal Kanban</h1>
             <input type="text" id={"column-input"} placeholder="New column name"
             onChange={event=>setColumnName(event.target.value)} value={columnName} onKeyDown={handleKeyDown}></input>

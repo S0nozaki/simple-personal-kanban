@@ -1,12 +1,16 @@
 import Columns from "./components/Columns";
 import Header from "./components/Header";
 import TaskCard from "./components/TaskCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DragDropContext} from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
-import Firebase, { signOutUser, getUserKanban } from "./firebase"
+import { initializeFirebaseApp, initializeAuth, initializeDB, createNewUser, logIn, signOutAll, writeUserKanban, getUserKanban } from "./firebase"
+import { onAuthStateChanged } from "firebase/auth"
 
 function App() {
+  const [app, setApp] = useState(initializeFirebaseApp())
+  const [auth, setAuth] = useState(initializeAuth(app))
+  const [db, setDB] = useState(initializeDB(app))
   const [unsavedChanges, setUnsavedChanges] = useState(false)
   const [columns, setColumns] = useState([{id:uuidv4(), name:'columna',tasks:[{id:uuidv4(), name:"Generar columnas"},{id:uuidv4(), name:"Generar columna"},{id:uuidv4(), name:"Generar tasks"}]}])//,{id:1, name:'columna2',tasks:[]}
   const addColumn = (columnName) => {
@@ -59,13 +63,31 @@ function App() {
   const [user, setUser] = useState()
   const setUserData = async (user_id) => {
     setUser(user_id)
-    importFile(await getUserKanban(user_id))
+    importFile(await getUserKanban(db, user_id))
   }
   const [isTaskCardVisible, setIsTaskCardVisible] = useState(false)
+
+  const createUser = async (email, password) => { createNewUser(auth, email, password) }
+  const logInUser = async (email, password) => { logIn(auth, email, password) }
+  const signOutUser =() => {
+    signOutAll(auth)
+  }
+  const saveKanban = () => {
+    writeUserKanban(db, user, columns)
+  }
+
+  useEffect(()=>{
+    const unsubscribe = onAuthStateChanged(auth, user =>{
+        if(user!==null)
+          setUserData(user.uid)
+        else
+          setUserData(null)
+      })
+    return () => { unsubscribe() }
+  }, [])
   return (
     <>
-      <Firebase onSetUserData={setUserData}></Firebase>
-      <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onSignOut={signOutUser} user={user} unsavedChanges={unsavedChanges} setUnsavedChanges={setUnsavedChanges}></Header>
+      <Header onAdd={addColumn} columns={columns} onImportFile={importFile} onCreateUser={createUser} onLogIn={logInUser} onSignOut={signOutUser} onSaveKanban={saveKanban} user={user} unsavedChanges={unsavedChanges} setUnsavedChanges={setUnsavedChanges}></Header>
       <TaskCard isTaskCardVisible={isTaskCardVisible} setIsTaskCardVisible={setIsTaskCardVisible} selectedTask={selectedTask} setSelectedTask={setSelectedTask} onEditTask={editTask}></TaskCard>
       <DragDropContext onDragEnd={result => dragEnd(result)}>
         <div className="container">

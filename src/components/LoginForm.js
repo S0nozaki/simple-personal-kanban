@@ -1,24 +1,15 @@
 import React, { useState } from "react";
-import { createUser, logIn } from "../firebase"
 
-const LoginForm = ({ isVisible, hideLogin }) => {
+const LoginForm = ({ isVisible, hideLogin, onCreateUser, onLogIn }) => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [login, setLogin] = useState(true)
     const handleLogIn = async () => {
-        try {
-            await logIn(username, password)
-        } catch {
-            alert("User couldn't log in")
-        }
+        onLogIn(username, password)
         handleSubmit()
     }
     const handleSignUp = async () => {
-        try {
-            await createUser(username, password)
-        } catch {
-            alert("User couldn't be created")
-        }
+        onCreateUser(username, password)
         handleSubmit()
     }
     const handleKeyDown = (event, login) => {
