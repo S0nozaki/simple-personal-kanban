@@ -3,9 +3,13 @@ import { useState, useRef, useEffect } from "react"
 const TaskCard = ( { isTaskCardVisible, setIsTaskCardVisible, selectedTask, setSelectedTask, onEditTask }) => {
     const [editedTaskName, setEditedTaskName] = useState('')
     const [comment, setComment] = useState('')
+    const [taskCardFocused, setTaskCardFocused] = useState(false)
     const titleInput = useRef(null)
     useEffect(()=>{
-        titleInput.current.focus()
+        if(!taskCardFocused){
+            titleInput.current.focus()
+            setTaskCardFocused(true)
+        }
     })
     const handleClose = (event) => {
         setIsTaskCardVisible(false)
